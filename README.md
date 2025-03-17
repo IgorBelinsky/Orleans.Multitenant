@@ -4,6 +4,8 @@ Secure, flexible tenant separation for Microsoft Orleans 8
 > [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Orleans.Multitenant?color=gold&label=NuGet:%20Orleans.Multitenant&style=plastic)](https://www.nuget.org/packages/Orleans.Multitenant)<br />
 > (install in silo client and grain implementation projects)
 
+_(Note: this repo was transferred from Applicita to VincentH-Net on March 17, 2025 to reflect who actively maintains it)_
+
 ## Summary
 [Microsoft Orleans 8](https://github.com/dotnet/orleans/releases/tag/v8.0.0) is a great technology for building distributed, cloud-native applications. It was designed to reduce the complexity of building this type of applications for C# developers.
 
