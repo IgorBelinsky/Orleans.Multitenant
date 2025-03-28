@@ -1,6 +1,6 @@
 ﻿// Version: 1.0.0 (Using https://semver.org/)
 // Updated: 2022-11-10
-// See https://github.com/Applicita/Orleans.Results for updates to this file.
+// See https://github.com/VincentH-Net/Orleans.Results for updates to this file.
 
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
