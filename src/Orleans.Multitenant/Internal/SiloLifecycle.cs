@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
-using Orleans.Runtime;
 
 namespace Orleans.Multitenant.Internal;
 
@@ -130,7 +129,7 @@ sealed class SiloLifecycleSimulator : ISiloLifecycle, IRepeatedSiloLifecycleObse
         {
             int stage = subscriptionsForStage.Key;
             logger.ReplayingSiloLifecycleStartForTenant(subscriptionsForStage.Count(), stage);
-            await Task.WhenAll(subscriptionsForStage.Select(s => s.Observer.OnStart(ct)).ToArray()).ConfigureAwait(false);
+            await Task.WhenAll([.. subscriptionsForStage.Select(s => s.Observer.OnStart(ct))]).ConfigureAwait(false);
             HighestCompletedStage = stage;
         }
     }
@@ -148,7 +147,7 @@ sealed class SiloLifecycleSimulator : ISiloLifecycle, IRepeatedSiloLifecycleObse
         {
             int stage = subscriptionsForStage.Key;
             logger.ForwardingSiloLifecycleStopForTenant(subscriptionsForStage.Count(), stage);
-            await Task.WhenAll(subscriptionsForStage.Select(s => s.Observer.OnStop(ct)).ToArray()).ConfigureAwait(false);
+            await Task.WhenAll([.. subscriptionsForStage.Select(s => s.Observer.OnStop(ct))]).ConfigureAwait(false);
         }
     }
 
