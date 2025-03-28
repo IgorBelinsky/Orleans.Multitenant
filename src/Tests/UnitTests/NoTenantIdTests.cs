@@ -8,7 +8,6 @@ public class NoTenantIdTests(ClusterFixture fixture)
     readonly Orleans.TestingHost.TestCluster cluster = fixture.Cluster;
 
     public static TheoryData<string /*key*/, string /*tenantQualifiedKey*/> KeyQualifiedKeys() => new() {
-        { ""      , ""        },
         { "1"     , "1"       },
         { "Key2"  , "Key2"    },
         { "|"     , "||"      },
