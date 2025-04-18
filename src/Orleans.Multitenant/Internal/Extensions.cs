@@ -41,12 +41,12 @@ static class TenantIdExtensions
     const byte SeparatorByte = (byte)SeparatorChar;
     const byte SeparatorsSeparatorByte = (byte)SeparatorsSeparatorChar;
 
-    static readonly string unescapedSeparatorString = new(SeparatorChar, 1);
-    static readonly string escapedSeparatorString = new(SeparatorChar, 2);
+    static readonly string UnescapedSeparatorString = new(SeparatorChar, 1);
+    static readonly string EscapedSeparatorString = new(SeparatorChar, 2);
 
     /// <remarks>This is the inverse of <see cref="AsTenantId(string?)"/></remarks>
     internal static string? TenantIdString(this ReadOnlySpan<byte> tenantId)
-        => tenantId.IsEmpty ? null : Encoding.UTF8.GetString(tenantId[..^1]).Replace(escapedSeparatorString, unescapedSeparatorString, StringComparison.Ordinal);
+        => tenantId.IsEmpty ? null : Encoding.UTF8.GetString(tenantId[..^1]).Replace(EscapedSeparatorString, UnescapedSeparatorString, StringComparison.Ordinal);
 
     /// <param name="tenantIdString">Can be any string, including an empty one</param>
     /// <returns>A non-empty tenant ID that is unique for <paramref name="tenantIdString"/></returns>
@@ -56,7 +56,7 @@ static class TenantIdExtensions
     /// This ensures that no knowledge on the formatting of tenant qualified keys is needed outside of this class.
     /// </remarks>
     internal static ReadOnlySpan<byte> AsTenantId(this string? tenantIdString)
-        => tenantIdString is null ? default : Encoding.UTF8.GetBytes(tenantIdString.Replace(unescapedSeparatorString, escapedSeparatorString, StringComparison.Ordinal) + SeparatorChar);
+        => tenantIdString is null ? default : Encoding.UTF8.GetBytes(tenantIdString.Replace(UnescapedSeparatorString, EscapedSeparatorString, StringComparison.Ordinal) + SeparatorChar);
 
     internal static IdSpan GetTenantQualifiedKey(this ReadOnlySpan<byte> tenantId, string keyWithinTenant)
     {
@@ -64,7 +64,7 @@ static class TenantIdExtensions
 
         if (tenantId.IsEmpty) // No tenant, a.k.a. the null tenant
         {
-            key = key.Replace(unescapedSeparatorString, escapedSeparatorString, StringComparison.Ordinal);
+            key = key.Replace(UnescapedSeparatorString, EscapedSeparatorString, StringComparison.Ordinal);
         }
         else
         {
@@ -111,7 +111,7 @@ static class TenantIdExtensions
 
         if (tenantId.IsEmpty)
         {
-            keyWithinTenant = Encoding.UTF8.GetString(qualifiedKey).Replace(escapedSeparatorString, unescapedSeparatorString, StringComparison.Ordinal);
+            keyWithinTenant = Encoding.UTF8.GetString(qualifiedKey).Replace(EscapedSeparatorString, UnescapedSeparatorString, StringComparison.Ordinal);
         }
         else
         {

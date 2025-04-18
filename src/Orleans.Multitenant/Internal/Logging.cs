@@ -37,49 +37,49 @@ enum LoggingParameter
 
 static class LoggerExtensions
 {
-    static readonly Action<ILogger, string, string, string, Exception?> creatingTenantProvider = LoggerMessage.Define<string, string, string>(
+    static readonly Action<ILogger, string, string, string, Exception?> LogCreatingTenantProvider = LoggerMessage.Define<string, string, string>(
         LogLevel.Information,
         Event.CreatingTenantProvider.Id(),
         $"Creating {{{GrainStorageType}}} provider for tenant '{{{TenantId}}}' with provider name '{{{ProviderName}}}'"
     );
 
-    static readonly Action<ILogger, string, double, Exception?> startingTenantProvider = LoggerMessage.Define<string, double>(
+    static readonly Action<ILogger, string, double, Exception?> LogStartingTenantProvider = LoggerMessage.Define<string, double>(
         LogLevel.Information,
         Event.StartingTenantProvider.Id(),
         $"Starting provider for tenant '{{{TenantId}}}' (timeout = {{{TimeoutSeconds}}} seconds)"
     );
 
-    static readonly Action<ILogger, string, Exception?> startedTenantProvider = LoggerMessage.Define<string>(
+    static readonly Action<ILogger, string, Exception?> LogStartedTenantProvider = LoggerMessage.Define<string>(
         LogLevel.Information,
         Event.StartedTenantProvider.Id(),
         $"Started provider for tenant '{{{TenantId}}}'"
     );
 
-    static readonly Action<ILogger, int, int, int, Exception?> recordingSiloLifecycleStart = LoggerMessage.Define<int, int, int>(
+    static readonly Action<ILogger, int, int, int, Exception?> LogRecordingSiloLifecycleStart = LoggerMessage.Define<int, int, int>(
         LogLevel.Information,
         Event.RecordingSiloLifecycleStart.Id(),
         $"Recording start of silo lifecycle with HighestCompletedStage = {{{nameof(HighestCompletedStage)}}} for stages {{{nameof(FirstStage)}}}..{{{nameof(LastStage)}}}"
     );
 
-    static readonly Action<ILogger, int, int, int, int, Exception?> forwardingSiloLifecycleStop = LoggerMessage.Define<int, int, int, int>(
+    static readonly Action<ILogger, int, int, int, int, Exception?> LogForwardingSiloLifecycleStop = LoggerMessage.Define<int, int, int, int>(
         LogLevel.Information,
         Event.ForwardingSiloLifecycleStop.Id(),
         $"Forwarding silo lifecycle stop event with LowestStoppedStage = {{{nameof(LowestStoppedStage)}}} to {{{ObserverCount}}} observers of stages {{{nameof(FirstStage)}}}..{{{nameof(LastStage)}}}"
     );
 
-    static readonly Action<ILogger, int, int, Exception?> replayingSiloLifecycleStartForTenant = LoggerMessage.Define<int, int>(
+    static readonly Action<ILogger, int, int, Exception?> LogReplayingSiloLifecycleStartForTenant = LoggerMessage.Define<int, int>(
         LogLevel.Information,
         Event.ReplayingSiloLifecycleStartForTenant.Id(),
         $"Replaying silo lifecycle start to {{{SubscriptionCount}}} subscription(s) on stage {{{Stage}}}"
     );
 
-    static readonly Action<ILogger, int, int, Exception?> forwardingSiloLifecycleStopForTenant = LoggerMessage.Define<int, int>(
+    static readonly Action<ILogger, int, int, Exception?> LogForwardingSiloLifecycleStopForTenant = LoggerMessage.Define<int, int>(
         LogLevel.Information,
         Event.ForwardingSiloLifecycleStopForTenant.Id(),
         $"Forwarding silo lifecycle stop to {{{SubscriptionCount}}} subscription(s) on stage {{{Stage}}}"
     );
 
-    static readonly Action<ILogger, StreamId, object, string?, Exception?> tenantUnawareStreamApiUsed = LoggerMessage.Define<StreamId, object, string?>(
+    static readonly Action<ILogger, StreamId, object, string?, Exception?> LogTenantUnawareStreamApiUsed = LoggerMessage.Define<StreamId, object, string?>(
         LogLevel.Error,
         Event.TenantUnawareStreamApiUsed.Id(),
         $"Stream {{{TenantAwareStreamId}}} has a tenant aware stream provider, but event {{{StreamItem}}} of type {{{StreamItemType}}} was not sent with the tenant aware API; use {nameof(Multitenant.GrainExtensions.GetTenantStreamProvider)} instead of {nameof(ClientStreamingExtensions.GetStreamProvider)}"
@@ -88,27 +88,27 @@ static class LoggerExtensions
     internal static EventId Id(this Event e) => new((int)e, Enum.GetName(e));
 
     internal static void CreatingTenantProvider(this ILogger logger, Type grainStorageType, string tenantId, string providerName)
-                      => creatingTenantProvider(logger, grainStorageType.Name, tenantId, providerName, null);
+                      => LogCreatingTenantProvider(logger, grainStorageType.Name, tenantId, providerName, null);
 
     internal static void StartingTenantProvider(this ILogger logger, string tenantId, double timeoutSeconds)
-                      => startingTenantProvider(logger, tenantId, timeoutSeconds, null);
+                      => LogStartingTenantProvider(logger, tenantId, timeoutSeconds, null);
 
     internal static void StartedTenantProvider(this ILogger logger, string tenantId)
-                      => startedTenantProvider(logger, tenantId, null);
+                      => LogStartedTenantProvider(logger, tenantId, null);
 
     internal static void RecordingSiloLifecycleStart(this ILogger logger, int highestCompletedStage, int firstStage, int lastStage)
-                      => recordingSiloLifecycleStart(logger, highestCompletedStage, firstStage, lastStage, null);
+                      => LogRecordingSiloLifecycleStart(logger, highestCompletedStage, firstStage, lastStage, null);
 
     internal static void ForwardingSiloLifecycleStop(this ILogger logger, int lowestStoppedStage, int observerCount, int firstStage, int lastStage)
-                      => forwardingSiloLifecycleStop(logger, lowestStoppedStage, observerCount, firstStage, lastStage, null);
+                      => LogForwardingSiloLifecycleStop(logger, lowestStoppedStage, observerCount, firstStage, lastStage, null);
 
     internal static void ReplayingSiloLifecycleStartForTenant(this ILogger logger, int subscriptionCount, int stage)
-                      => replayingSiloLifecycleStartForTenant(logger, subscriptionCount, stage, null);
+                      => LogReplayingSiloLifecycleStartForTenant(logger, subscriptionCount, stage, null);
 
     internal static void ForwardingSiloLifecycleStopForTenant(this ILogger logger, int subscriptionCount, int stage)
-                      => forwardingSiloLifecycleStopForTenant(logger, subscriptionCount, stage, null);
+                      => LogForwardingSiloLifecycleStopForTenant(logger, subscriptionCount, stage, null);
 
     internal static void TenantUnawareStreamApiUsed(this ILogger logger, StreamId streamId, object streamItem)
-                      => tenantUnawareStreamApiUsed(logger, streamId, streamItem, streamItem.GetType().FullName, null);
+                      => LogTenantUnawareStreamApiUsed(logger, streamId, streamItem, streamItem.GetType().FullName, null);
 
 }

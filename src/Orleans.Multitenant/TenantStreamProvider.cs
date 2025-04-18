@@ -54,8 +54,8 @@ public readonly struct TenantStreamProvider
 [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "Is a stream")]
 public readonly record struct TenantStream<T> : IComparable<TenantStream<T>>
 {
-    static readonly Func<Exception, Task> defaultOnError = _ => Task.CompletedTask;
-    static readonly Func<Task> defaultOnCompleted = () => Task.CompletedTask;
+    static readonly Func<Exception, Task> DefaultOnError = _ => Task.CompletedTask;
+    static readonly Func<Task> DefaultOnCompleted = () => Task.CompletedTask;
 
     readonly IAsyncStream<TenantEvent<T>> stream;
 
@@ -112,18 +112,18 @@ public readonly record struct TenantStream<T> : IComparable<TenantStream<T>>
     public Task<StreamSubscriptionHandle<TenantEvent<T>>> SubscribeAsync(
         Func<T, StreamSequenceToken, Task> onNextAsync,
         Func<Exception, Task> onErrorAsync)
-    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), onErrorAsync, defaultOnCompleted);
+    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), onErrorAsync, DefaultOnCompleted);
 
     /// <inheritdoc cref="AsyncObservableExtensions.SubscribeAsync{T}(IAsyncObservable{T}, Func{T, StreamSequenceToken, Task}, Func{Task})"/>
     public Task<StreamSubscriptionHandle<TenantEvent<T>>> SubscribeAsync(
         Func<T, StreamSequenceToken, Task> onNextAsync,
         Func<Task> onCompletedAsync)
-    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), defaultOnError, onCompletedAsync);
+    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), DefaultOnError, onCompletedAsync);
 
     /// <inheritdoc cref="AsyncObservableExtensions.SubscribeAsync{T}(IAsyncObservable{T}, Func{T, StreamSequenceToken, Task})"/>
     public Task<StreamSubscriptionHandle<TenantEvent<T>>> SubscribeAsync(
         Func<T, StreamSequenceToken, Task> onNextAsync)
-    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), defaultOnError, defaultOnCompleted);
+    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), DefaultOnError, DefaultOnCompleted);
 
 
     /// <inheritdoc cref="AsyncObservableExtensions.SubscribeAsync{T}(IAsyncObservable{T}, Func{T, StreamSequenceToken, Task}, Func{Exception, Task}, Func{Task}, StreamSequenceToken)"/>
@@ -139,20 +139,20 @@ public readonly record struct TenantStream<T> : IComparable<TenantStream<T>>
         Func<T, StreamSequenceToken, Task> onNextAsync,
         Func<Exception, Task> onErrorAsync,
         StreamSequenceToken token)
-    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), onErrorAsync, defaultOnCompleted, token);
+    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), onErrorAsync, DefaultOnCompleted, token);
 
     /// <inheritdoc cref="AsyncObservableExtensions.SubscribeAsync{T}(IAsyncObservable{T}, Func{T, StreamSequenceToken, Task}, Func{Task}, StreamSequenceToken)"/>
     public Task<StreamSubscriptionHandle<TenantEvent<T>>> SubscribeAsync(
         Func<T, StreamSequenceToken, Task> onNextAsync,
         Func<Task> onCompletedAsync,
         StreamSequenceToken token)
-    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), defaultOnError, onCompletedAsync, token);
+    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), DefaultOnError, onCompletedAsync, token);
 
     /// <inheritdoc cref="AsyncObservableExtensions.SubscribeAsync{T}(IAsyncObservable{T}, Func{T, StreamSequenceToken, Task}, StreamSequenceToken)"/>
     public Task<StreamSubscriptionHandle<TenantEvent<T>>> SubscribeAsync(
         Func<T, StreamSequenceToken, Task> onNextAsync,
         StreamSequenceToken token)
-    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), defaultOnError, defaultOnCompleted, token);
+    => stream.SubscribeAsync((item, token) => onNextAsync(item.Event, token), DefaultOnError, DefaultOnCompleted, token);
 
     public int CompareTo(TenantStream<T> other) => stream.CompareTo(other.stream);
 

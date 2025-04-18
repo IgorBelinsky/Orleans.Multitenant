@@ -10,22 +10,22 @@ namespace Orleans.Multitenant;
 [SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Instances of the value type will not be compared to each other")]
 public readonly struct TenantGrainFactory
 {
-    internal readonly IGrainFactory factory;
+    internal readonly IGrainFactory Factory;
 
-    internal readonly ReadOnlyMemory<byte> tenantId;
+    internal readonly ReadOnlyMemory<byte> TenantId;
     // We don't use ReadOnlySpan here because that would require TenantGrainFactory to be a ref struct
     // which would severely limit where developers can store TenantGrainFactories
 
     internal TenantGrainFactory(IGrainFactory factory, IAddressable grain)
     {
-        this.factory = factory;
-        tenantId = new(grain.GetGrainId().TryGetTenantId().ToArray());
+        this.Factory = factory;
+        TenantId = new(grain.GetGrainId().TryGetTenantId().ToArray());
     }
 
     internal TenantGrainFactory(IGrainFactory factory, string? tenantIdString = null)
     {
-        this.factory = factory;
-        tenantId = tenantIdString.AsTenantId().ToArray();
+        this.Factory = factory;
+        TenantId = tenantIdString.AsTenantId().ToArray();
     }
 
     /// <summary>Gets a reference to a tenant speficic grain.</summary>
@@ -36,7 +36,7 @@ public readonly struct TenantGrainFactory
     public TGrainInterface GetGrain<TGrainInterface>(string keyWithinTenant, string? grainClassNamePrefix = null) where TGrainInterface : IGrainWithStringKey
     {
         ArgumentNullException.ThrowIfNull(keyWithinTenant);
-        return factory.GetGrain<TGrainInterface>(tenantId.Span.GetTenantQualifiedKey(keyWithinTenant).ToString(), grainClassNamePrefix);
+        return Factory.GetGrain<TGrainInterface>(TenantId.Span.GetTenantQualifiedKey(keyWithinTenant).ToString(), grainClassNamePrefix);
     }
 
     /// <summary>Returns a reference to the tenant specific grain which is the primary implementation of the provided interface type and has the provided primary key.</summary>
@@ -46,6 +46,6 @@ public readonly struct TenantGrainFactory
     public IGrain GetGrain(Type grainInterfaceType, string keyWithinTenant)
     {
         ArgumentNullException.ThrowIfNull(keyWithinTenant);
-        return factory.GetGrain(grainInterfaceType, tenantId.Span.GetTenantQualifiedKey(keyWithinTenant).ToString());
+        return Factory.GetGrain(grainInterfaceType, TenantId.Span.GetTenantQualifiedKey(keyWithinTenant).ToString());
     }
 }

@@ -14,7 +14,7 @@ sealed class TestingUtils
         delayOnFail ??= TimeSpan.FromSeconds(1);
         bool[] keepGoing = [true];
 
-        var task = loop();
+        var task = Loop();
         try
         {
             _ = await Task.WhenAny(task, Task.Delay(timeout));
@@ -26,7 +26,7 @@ sealed class TestingUtils
 
         await task;
 
-        async Task loop()
+        async Task Loop()
         {
             bool passed;
             do
